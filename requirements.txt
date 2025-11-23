@@ -1,7 +1,14 @@
 numpy
 pandas
+matplotlib
 seaborn
 scipy
 nilearn
+nibabel
 scikit-learn
+statsmodels
+pingouin
+tqdm
+openpyxl
+jupyter
 ipykernel
