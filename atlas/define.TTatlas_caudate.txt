@@ -1,0 +1,47 @@
+
+Dataset File:    /mnt/ext5/GP/fmri_data/masks/mask.TTatlas.caudate.resampled.nii
+Identifier Code: AFN_0Eg48Tt2OkWFG7TXrak3uQ  Creation Date: Mon Mar 20 03:40:53 2023
+Template Space:  TLRC
+Dataset Type:    Anat Bucket (-abuc)
+Byte Order:      LSB_FIRST {assumed} [this CPU native = LSB_FIRST]
+Storage Mode:    NIFTI
+Storage Space:   1,090,936 (1.1 million) bytes
+Geometry String: "MATRIX(-2.5,0,0,95,0,-2.5,0,131.75,0,0,2.5,-77):77,92,77"
+Data Axes Tilt:  Plumb
+Data Axes Orientation:
+  first  (x) = Left-to-Right
+  second (y) = Posterior-to-Anterior
+  third  (z) = Inferior-to-Superior   [-orient LPI]
+R-to-L extent:   -95.000 [R] -to-    95.000 [L] -step-     2.500 mm [ 77 voxels]
+A-to-P extent:   -95.750 [A] -to-   131.750 [P] -step-     2.500 mm [ 92 voxels]
+I-to-S extent:   -77.000 [I] -to-   113.000 [S] -step-     2.500 mm [ 77 voxels]
+Number of values stored at each pixel = 1
+  -- At sub-brick #0 'uu5[0]' datum type is short:            0 to             4
+
+----- HISTORY -----
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:40:53 2023] ===================================
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:40:53 2023] === History of inputs to 3dcalc ===
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:40:53 2023] === Input a:
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:40:53 2023] [rwcox@hurin.nimh.nih.gov: Mon Aug 20 08:48:02 2001] 3dbucket -prefix TTatlas uu3+tlrc uu5+tlrc
+[rwcox@hurin.nimh.nih.gov: Mon Aug 20 08:48:50 2001] Talairach Daemon database provided by Jack Lancaster and Peter Fox of RIC-UTHSCSA
+[dglen@ndsl-lfmi-kocha.nih.gov: Thu Sep  9 14:00:34 2010] 3drefit -space TLRC /Users/dglen/abin/TT_EPI+tlrc.HEAD /Users/dglen/abin/TT_N27+tlrc.HEAD /Users/dglen/abin/TT_N27_CA_EZ_MPM+tlrc.HEAD /Users/dglen/abin/TT_N27_CA_EZ_PMaps+tlrc.HEAD /Users/dglen/abin/TT_N27_EZ_LR+tlrc.HEAD /Users/dglen/abin/TT_N27_EZ_ML+tlrc.HEAD /Users/dglen/abin/TT_avg152T1+tlrc.HEAD /Users/dglen/abin/TT_avg152T2+tlrc.HEAD /Users/dglen/abin/TT_icbm452+tlrc.HEAD /Users/dglen/abin/TTatlas+tlrc.HEAD
+[dglen@ndsl-lfmi-kocha.nih.gov: Thu Sep  9 18:14:56 2010] 3drefit -cmap INT_CMAP TTatlas+tlrc. TT_N27_CA_EZ_MPM+tlrc.HEAD TT_N27_CA_EZ_PMaps+tlrc.HEAD TT_N27_EZ_LR+tlrc.HEAD TT_N27_EZ_ML+tlrc.HEAD
+[dglen@gollum.nimh.nih.gov: Thu Sep 23 18:55:21 2010] 3drefit -labeltable /Users/dglen/ttlabeltable.txt.niml.lt TTatlas+tlrc.
+[dglen@gollum.nimh.nih.gov: Wed Nov  3 14:32:50 2010] 3dcalc -a TTatlas+tlrc -RAI -expr 'a+200*step(x*a)' -datum short -nscale -prefix TTatlas_left200
+[dglen@gollum.nimh.nih.gov: Wed Nov  3 14:37:23 2010] 3dbucket -prefix TT_l200_0 'TTatlas_left200+tlrc.[0]'
+[dglen@gollum.nimh.nih.gov: Wed Nov  3 14:38:40 2010] Drawing plugin COPY: Fill->Data
+[dglen@gollum.nimh.nih.gov: Wed Nov  3 14:44:24 2010] Drawing plugin COPY: Fill->Data
+[dglen@gollum.nimh.nih.gov: Wed Nov  3 14:46:25 2010] 3dbucket -prefix TTatlas_2010 TT_l200_0_ACPCCC+tlrc. TT_l200_1+tlrc.
+[dglen@gollum.nimh.nih.gov: Tue Nov 30 17:55:47 2010] 3dcalc -a TTatlas_2010+tlrc -expr 'a+200*equals(x,0)*step(a-3)' -prefix TTatlas_2010_2
+[dglen@gollum.nimh.nih.gov: Tue Nov 30 17:55:59 2010] 3drefit -cmap INT_CMAP TTatlas_2010_2+tlrc
+[dglen@gollum.nimh.nih.gov: Tue Nov 30 18:01:54 2010] 3dcopy TTatlas_2010_2+tlrc. TTatlas_2010_master
+[dglen@gollum.nimh.nih.gov: Tue Nov 30 18:02:01 2010] 3drefit -cmap INT_CMAP TTatlas_2010_master+tlrc.
+[dglen@gollum.nimh.nih.gov: Tue Nov 30 18:02:06 2010] 3drefit -atrstring ATLAS_LABEL_TABLE file:TT_atlas.niml TTatlas_2010_master+tlrc.
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:35:13 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dresample -prefix /mnt/ext5/GP/fmri_data/masks/resam.TTatlas.nii -input /mnt/sda2/atlas/afni/TTatlas.nii -master /mnt/ext5/GP/fmri_data/masks/mask.group.day2.n42.frac=0.7.nii
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:36:48 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a '/mnt/ext5/GP/fmri_data/masks/resam.TTatlas.nii[uu5[0]]' -expr 'equals(a,326) + equals(a,325)*2 + equals(a,126)*3 + equals(a,125)*4' -prefix /mnt/ext5/GP/fmri_data/masks/resam.TTatlas.caudate.nii
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:40:53 2023] === Input b:
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:40:53 2023] [sungbeenpark@user-TRX40-DESIGNARE: Tue Jun 28 20:58:52 2022] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a /mnt/sda2/atlas/HarvardOxford/HarvardOxford-sub-maxprob-thr0-1mm.nii.gz -expr 'or(equals(a,5),equals(a,16))' -prefix /mnt/ext6/GP/fmri_data/masks/HarvardOxford-sub-maxprob-thr0-1mm.caudate.nii
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:15:27 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dresample -input /mnt/ext5/GP/fmri_data/masks/HarvardOxford-sub-maxprob-thr0-1mm.caudate.nii -master /mnt/ext5/GP/fmri_data/masks/mask.group.day2.n42.frac=0.7.nii -prefix /mnt/ext5/GP/fmri_data/masks/HarvardOxford-sub-maxprob-thr0-1mm.caudate.resampled.nii
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:40:53 2023] ===================================
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:40:53 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a /mnt/ext5/GP/fmri_data/masks/resam.TTatlas.caudate.nii -b /mnt/ext5/GP/fmri_data/masks/HarvardOxford-sub-maxprob-thr0-1mm.caudate.resampled.nii -expr 'a*b' -prefix /mnt/ext5/GP/fmri_data/masks/mask.TTatlas.caudate.resampled.nii
+

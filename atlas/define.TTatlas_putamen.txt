@@ -1,0 +1,99 @@
+
+Dataset File:    /mnt/ext5/GP/fmri_data/masks/mask.TTatlas.putamen.resampled.nii
+Identifier Code: AFN_U2OAuvSqKII_khR-aNLbug  Creation Date: Mon Mar 20 03:45:13 2023
+Template Space:  TLRC
+Dataset Type:    Anat Bucket (-abuc)
+Byte Order:      LSB_FIRST [this CPU native = LSB_FIRST]
+Storage Mode:    NIFTI
+Storage Space:   1,090,936 (1.1 million) bytes
+Geometry String: "MATRIX(-2.5,0,0,95,0,-2.5,0,131.75,0,0,2.5,-77):77,92,77"
+Data Axes Tilt:  Plumb
+Data Axes Orientation:
+  first  (x) = Left-to-Right
+  second (y) = Posterior-to-Anterior
+  third  (z) = Inferior-to-Superior   [-orient LPI]
+R-to-L extent:   -95.000 [R] -to-    95.000 [L] -step-     2.500 mm [ 77 voxels]
+A-to-P extent:   -95.750 [A] -to-   131.750 [P] -step-     2.500 mm [ 92 voxels]
+I-to-S extent:   -77.000 [I] -to-   113.000 [S] -step-     2.500 mm [ 77 voxels]
+Number of values stored at each pixel = 1
+  -- At sub-brick #0 'uu5[0]' datum type is short:            0 to             4
+
+----- HISTORY -----
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:43:44 2023] ===================================
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:43:44 2023] === History of inputs to 3dcalc ===
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:43:44 2023] === Input a:
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:43:44 2023] [rwcox@hurin.nimh.nih.gov: Mon Aug 20 08:48:02 2001] 3dbucket -prefix TTatlas uu3+tlrc uu5+tlrc
+[rwcox@hurin.nimh.nih.gov: Mon Aug 20 08:48:50 2001] Talairach Daemon database provided by Jack Lancaster and Peter Fox of RIC-UTHSCSA
+[dglen@ndsl-lfmi-kocha.nih.gov: Thu Sep  9 14:00:34 2010] 3drefit -space TLRC /Users/dglen/abin/TT_EPI+tlrc.HEAD /Users/dglen/abin/TT_N27+tlrc.HEAD /Users/dglen/abin/TT_N27_CA_EZ_MPM+tlrc.HEAD /Users/dglen/abin/TT_N27_CA_EZ_PMaps+tlrc.HEAD /Users/dglen/abin/TT_N27_EZ_LR+tlrc.HEAD /Users/dglen/abin/TT_N27_EZ_ML+tlrc.HEAD /Users/dglen/abin/TT_avg152T1+tlrc.HEAD /Users/dglen/abin/TT_avg152T2+tlrc.HEAD /Users/dglen/abin/TT_icbm452+tlrc.HEAD /Users/dglen/abin/TTatlas+tlrc.HEAD
+[dglen@ndsl-lfmi-kocha.nih.gov: Thu Sep  9 18:14:56 2010] 3drefit -cmap INT_CMAP TTatlas+tlrc. TT_N27_CA_EZ_MPM+tlrc.HEAD TT_N27_CA_EZ_PMaps+tlrc.HEAD TT_N27_EZ_LR+tlrc.HEAD TT_N27_EZ_ML+tlrc.HEAD
+[dglen@gollum.nimh.nih.gov: Thu Sep 23 18:55:21 2010] 3drefit -labeltable /Users/dglen/ttlabeltable.txt.niml.lt TTatlas+tlrc.
+[dglen@gollum.nimh.nih.gov: Wed Nov  3 14:32:50 2010] 3dcalc -a TTatlas+tlrc -RAI -expr 'a+200*step(x*a)' -datum short -nscale -prefix TTatlas_left200
+[dglen@gollum.nimh.nih.gov: Wed Nov  3 14:37:23 2010] 3dbucket -prefix TT_l200_0 'TTatlas_left200+tlrc.[0]'
+[dglen@gollum.nimh.nih.gov: Wed Nov  3 14:38:40 2010] Drawing plugin COPY: Fill->Data
+[dglen@gollum.nimh.nih.gov: Wed Nov  3 14:44:24 2010] Drawing plugin COPY: Fill->Data
+[dglen@gollum.nimh.nih.gov: Wed Nov  3 14:46:25 2010] 3dbucket -prefix TTatlas_2010 TT_l200_0_ACPCCC+tlrc. TT_l200_1+tlrc.
+[dglen@gollum.nimh.nih.gov: Tue Nov 30 17:55:47 2010] 3dcalc -a TTatlas_2010+tlrc -expr 'a+200*equals(x,0)*step(a-3)' -prefix TTatlas_2010_2
+[dglen@gollum.nimh.nih.gov: Tue Nov 30 17:55:59 2010] 3drefit -cmap INT_CMAP TTatlas_2010_2+tlrc
+[dglen@gollum.nimh.nih.gov: Tue Nov 30 18:01:54 2010] 3dcopy TTatlas_2010_2+tlrc. TTatlas_2010_master
+[dglen@gollum.nimh.nih.gov: Tue Nov 30 18:02:01 2010] 3drefit -cmap INT_CMAP TTatlas_2010_master+tlrc.
+[dglen@gollum.nimh.nih.gov: Tue Nov 30 18:02:06 2010] 3drefit -atrstring ATLAS_LABEL_TABLE file:TT_atlas.niml TTatlas_2010_master+tlrc.
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:35:13 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dresample -prefix /mnt/ext5/GP/fmri_data/masks/resam.TTatlas.nii -input /mnt/sda2/atlas/afni/TTatlas.nii -master /mnt/ext5/GP/fmri_data/masks/mask.group.day2.n42.frac=0.7.nii
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:37:47 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a '/mnt/ext5/GP/fmri_data/masks/resam.TTatlas.nii[uu5[0]]' -expr 'equals(a,351) + equals(a,151)*2' -prefix /mnt/ext5/GP/fmri_data/masks/resam.TTatlas.putamen.nii
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:43:44 2023] === Input b:
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:43:44 2023] [sungbeenpark@user-TRX40-DESIGNARE: Tue Jun 28 20:58:51 2022] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a /mnt/sda2/atlas/HarvardOxford/HarvardOxford-sub-maxprob-thr0-1mm.nii.gz -expr 'or(equals(a,6),equals(a,17))' -prefix /mnt/ext6/GP/fmri_data/masks/HarvardOxford-sub-maxprob-thr0-1mm.putamen.nii
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:15:01 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dresample -input /mnt/ext5/GP/fmri_data/masks/HarvardOxford-sub-maxprob-thr0-1mm.putamen.nii -master /mnt/ext5/GP/fmri_data/masks/mask.group.day2.n42.frac=0.7.nii -prefix /mnt/ext5/GP/fmri_data/masks/HarvardOxford-sub-maxprob-thr0-1mm.putamen.resampled.nii
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:43:44 2023] === Input c:
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:43:44 2023] [sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:31:15 2023] ===================================
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:31:15 2023] === History of inputs to 3dcalc ===
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:31:15 2023] === Input a:
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:31:15 2023] [dglen@gollum.nimh.nih.gov: Wed Sep 17 17:37:45 2014] ===================================
+[dglen@gollum.nimh.nih.gov: Wed Sep 17 17:37:45 2014] === History of inputs to 3dcalc ===
+[dglen@gollum.nimh.nih.gov: Wed Sep 17 17:37:45 2014] === Input a:
+[dglen@gollum.nimh.nih.gov: Wed Sep 17 17:37:45 2014] === Input b:
+[dglen@gollum.nimh.nih.gov: Wed Sep 17 17:37:45 2014] ===================================
+[dglen@gollum.nimh.nih.gov: Wed Sep 17 17:37:45 2014] 3dcalc -a mni_icbm152_t1_tal_nlin_asym_09c.nii -b mni_icbm152_t1_tal_nlin_asym_09c_mask.nii -expr 'a*step(b)*255/97.66312' -datum byte -nscale -prefix MNI152_T1_2009c
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:25:34 2023] Drawing plugin COPY: Fill->Zero Type->Func Datum->byte
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:29:45 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dresample -input /mnt/ext5/GP/fmri_data/masks/COPY_MNI152_T1_2009c+tlrc. -master /mnt/ext5/GP/fmri_data/masks/mask.group.day2.n42.frac=0.7.nii -prefix /mnt/ext5/GP/fmri_data/masks/tmp.nii
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:31:15 2023] === Input b:
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:31:15 2023] [sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] ===================================
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] === History of inputs to 3dcalc ===
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] === Input a:
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] [sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 02:53:33 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dNwarpApply -master MPRAGE.GP08_unif_ns+tlrc -dxyz 2.5 -source pb02.GP08.r01.tshift+orig -nwarp 'anat.aff.qw_WARP.nii mat.r01.warp.aff12.1D                     blip_warp_For_WARP+orig' -prefix rm.epi.nomask.r01
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] === Input b:
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] [sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 02:40:06 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dNwarpApply -quintic -nwarp blip_warp_For_WARP+orig -source pb02.GP08.r01.tshift+orig -prefix pb03.GP08.r01.blip
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 02:47:05 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a pb03.GP08.r01.blip+orig -expr 1 -prefix rm.epi.all1
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:03:13 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dNwarpApply -master MPRAGE.GP08_unif_ns+tlrc -dxyz 2.5 -source rm.epi.all1+orig -nwarp 'anat.aff.qw_WARP.nii mat.r01.warp.aff12.1D' -interp cubic -ainterp NN -quiet -prefix rm.epi.1.r01
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:03:22 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dTstat -min -prefix rm.epi.min.r01 rm.epi.1.r01+tlrc
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:34 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dMean -datum short -prefix rm.epi.mean rm.epi.min.r01+tlrc.HEAD rm.epi.min.r02+tlrc.HEAD rm.epi.min.r03+tlrc.HEAD
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:34 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a rm.epi.mean+tlrc -expr 'step(a-0.999)' -prefix mask_epi_extents
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] ===================================
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a rm.epi.nomask.r01+tlrc -b mask_epi_extents+tlrc -expr 'a*b' -prefix pb04.GP08.r01.volreg
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:45:53 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dmerge -1blur_fwhm 4.0 -doall -prefix pb05.GP08.r01.blur pb04.GP08.r01.volreg+tlrc
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:46:13 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dAutomask -prefix rm.mask_r01 pb05.GP08.r01.blur+tlrc
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:46:23 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dmask_tool -inputs rm.mask_r01+tlrc.HEAD rm.mask_r02+tlrc.HEAD rm.mask_r03+tlrc.HEAD -union -prefix full_mask.GP08
+[sungbeenpark@user-TRX40-DESIGNARE: Wed Jan 11 13:11:27 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dmask_tool -input GP08/day2/full_mask.GP08+tlrc.HEAD GP09/day2/full_mask.GP09+tlrc.HEAD GP10/day2/full_mask.GP10+tlrc.HEAD GP11/day2/full_mask.GP11+tlrc.HEAD GP17/day2/full_mask.GP17+tlrc.HEAD GP18/day2/full_mask.GP18+tlrc.HEAD GP19/day2/full_mask.GP19+tlrc.HEAD GP20/day2/full_mask.GP20+tlrc.HEAD GP21/day2/full_mask.GP21+tlrc.HEAD GP22/day2/full_mask.GP22+tlrc.HEAD GP24/day2/full_mask.GP24+tlrc.HEAD GP26/day2/full_mask.GP26+tlrc.HEAD GP27/day2/full_mask.GP27+tlrc.HEAD GP32/day2/full_mask.GP32+tlrc.HEAD GP33/day2/full_mask.GP33+tlrc.HEAD GP34/day2/full_mask.GP34+tlrc.HEAD GP35/day2/full_mask.GP35+tlrc.HEAD GP36/day2/full_mask.GP36+tlrc.HEAD GP37/day2/full_mask.GP37+tlrc.HEAD GP38/day2/full_mask.GP38+tlrc.HEAD GP39/day2/full_mask.GP39+tlrc.HEAD GP40/day2/full_mask.GP40+tlrc.HEAD GP41/day2/full_mask.GP41+tlrc.HEAD GP42/day2/full_mask.GP42+tlrc.HEAD GP43/day2/full_mask.GP43+tlrc.HEAD GP44/day2/full_mask.GP44+tlrc.HEAD GP45/day2/full_mask.GP45+tlrc.HEAD GP46/day2/full_mask.GP46+tlrc.HEAD GP47/day2/full_mask.GP47+tlrc.HEAD GP48/day2/full_mask.GP48+tlrc.HEAD GP49/day2/full_mask.GP49+tlrc.HEAD GP50/day2/full_mask.GP50+tlrc.HEAD GP51/day2/full_mask.GP51+tlrc.HEAD GP53/day2/full_mask.GP53+tlrc.HEAD GP54/day2/full_mask.GP54+tlrc.HEAD GP55/day2/full_mask.GP55+tlrc.HEAD GP56/day2/full_mask.GP56+tlrc.HEAD GP57/day2/full_mask.GP57+tlrc.HEAD GP58/day2/full_mask.GP58+tlrc.HEAD GP59/day2/full_mask.GP59+tlrc.HEAD GP61/day2/full_mask.GP61+tlrc.HEAD GP62/day2/full_mask.GP62+tlrc.HEAD -prefix /mnt/ext5/GP/fmri_data/masks/mask.group.day2.n42.frac=0.7.nii -frac 0.7
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:31:15 2023] ===================================
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:31:15 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a /mnt/ext5/GP/fmri_data/masks/tmp.nii -b /mnt/ext5/GP/fmri_data/masks/mask.group.day2.n42.frac=0.7.nii -expr 'a*b' -prefix /mnt/ext5/GP/fmri_data/masks/y=0.nii
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:43:44 2023] === Input d:
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:43:44 2023] [sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] ===================================
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] === History of inputs to 3dcalc ===
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] === Input a:
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] [sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 02:53:33 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dNwarpApply -master MPRAGE.GP08_unif_ns+tlrc -dxyz 2.5 -source pb02.GP08.r01.tshift+orig -nwarp 'anat.aff.qw_WARP.nii mat.r01.warp.aff12.1D                     blip_warp_For_WARP+orig' -prefix rm.epi.nomask.r01
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] === Input b:
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] [sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 02:40:06 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dNwarpApply -quintic -nwarp blip_warp_For_WARP+orig -source pb02.GP08.r01.tshift+orig -prefix pb03.GP08.r01.blip
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 02:47:05 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a pb03.GP08.r01.blip+orig -expr 1 -prefix rm.epi.all1
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:03:13 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dNwarpApply -master MPRAGE.GP08_unif_ns+tlrc -dxyz 2.5 -source rm.epi.all1+orig -nwarp 'anat.aff.qw_WARP.nii mat.r01.warp.aff12.1D' -interp cubic -ainterp NN -quiet -prefix rm.epi.1.r01
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:03:22 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dTstat -min -prefix rm.epi.min.r01 rm.epi.1.r01+tlrc
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:34 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dMean -datum short -prefix rm.epi.mean rm.epi.min.r01+tlrc.HEAD rm.epi.min.r02+tlrc.HEAD rm.epi.min.r03+tlrc.HEAD
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:34 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a rm.epi.mean+tlrc -expr 'step(a-0.999)' -prefix mask_epi_extents
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] ===================================
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:41:44 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a rm.epi.nomask.r01+tlrc -b mask_epi_extents+tlrc -expr 'a*b' -prefix pb04.GP08.r01.volreg
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:45:53 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dmerge -1blur_fwhm 4.0 -doall -prefix pb05.GP08.r01.blur pb04.GP08.r01.volreg+tlrc
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:46:13 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dAutomask -prefix rm.mask_r01 pb05.GP08.r01.blur+tlrc
+[sungbeenpark@user-TRX40-DESIGNARE: Tue Jan 10 03:46:23 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dmask_tool -inputs rm.mask_r01+tlrc.HEAD rm.mask_r02+tlrc.HEAD rm.mask_r03+tlrc.HEAD -union -prefix full_mask.GP08
+[sungbeenpark@user-TRX40-DESIGNARE: Wed Jan 11 13:11:27 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dmask_tool -input GP08/day2/full_mask.GP08+tlrc.HEAD GP09/day2/full_mask.GP09+tlrc.HEAD GP10/day2/full_mask.GP10+tlrc.HEAD GP11/day2/full_mask.GP11+tlrc.HEAD GP17/day2/full_mask.GP17+tlrc.HEAD GP18/day2/full_mask.GP18+tlrc.HEAD GP19/day2/full_mask.GP19+tlrc.HEAD GP20/day2/full_mask.GP20+tlrc.HEAD GP21/day2/full_mask.GP21+tlrc.HEAD GP22/day2/full_mask.GP22+tlrc.HEAD GP24/day2/full_mask.GP24+tlrc.HEAD GP26/day2/full_mask.GP26+tlrc.HEAD GP27/day2/full_mask.GP27+tlrc.HEAD GP32/day2/full_mask.GP32+tlrc.HEAD GP33/day2/full_mask.GP33+tlrc.HEAD GP34/day2/full_mask.GP34+tlrc.HEAD GP35/day2/full_mask.GP35+tlrc.HEAD GP36/day2/full_mask.GP36+tlrc.HEAD GP37/day2/full_mask.GP37+tlrc.HEAD GP38/day2/full_mask.GP38+tlrc.HEAD GP39/day2/full_mask.GP39+tlrc.HEAD GP40/day2/full_mask.GP40+tlrc.HEAD GP41/day2/full_mask.GP41+tlrc.HEAD GP42/day2/full_mask.GP42+tlrc.HEAD GP43/day2/full_mask.GP43+tlrc.HEAD GP44/day2/full_mask.GP44+tlrc.HEAD GP45/day2/full_mask.GP45+tlrc.HEAD GP46/day2/full_mask.GP46+tlrc.HEAD GP47/day2/full_mask.GP47+tlrc.HEAD GP48/day2/full_mask.GP48+tlrc.HEAD GP49/day2/full_mask.GP49+tlrc.HEAD GP50/day2/full_mask.GP50+tlrc.HEAD GP51/day2/full_mask.GP51+tlrc.HEAD GP53/day2/full_mask.GP53+tlrc.HEAD GP54/day2/full_mask.GP54+tlrc.HEAD GP55/day2/full_mask.GP55+tlrc.HEAD GP56/day2/full_mask.GP56+tlrc.HEAD GP57/day2/full_mask.GP57+tlrc.HEAD GP58/day2/full_mask.GP58+tlrc.HEAD GP59/day2/full_mask.GP59+tlrc.HEAD GP61/day2/full_mask.GP61+tlrc.HEAD GP62/day2/full_mask.GP62+tlrc.HEAD -prefix /mnt/ext5/GP/fmri_data/masks/mask.group.day2.n42.frac=0.7.nii -frac 0.7
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:43:44 2023] ===================================
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:43:44 2023] {AFNI_21.2.04:linux_ubuntu_16_64} 3dcalc -a /mnt/ext5/GP/fmri_data/masks/resam.TTatlas.putamen.nii -b /mnt/ext5/GP/fmri_data/masks/HarvardOxford-sub-maxprob-thr0-1mm.putamen.resampled.nii -c /mnt/ext5/GP/fmri_data/masks/y=0.nii -d /mnt/ext5/GP/fmri_data/masks/mask.group.day2.n42.frac=0.7.nii -expr 'a*b*(d-c)' -prefix /mnt/ext5/GP/fmri_data/masks/tmp.nii
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:44:24 2023] == Interactive clusterize mask:
+[sungbeenpark@user-TRX40-DESIGNARE: Mon Mar 20 03:44:24 2023] 3dClusterize -nosum -1Dformat -inset /mnt/ext5/GP/fmri_data/masks/tmp.nii -idat 0 -ithr 0 -NN 2 -clust_nvox 40 -bisided -0.0001 0.0001 -pref_map Clust_mask
+
