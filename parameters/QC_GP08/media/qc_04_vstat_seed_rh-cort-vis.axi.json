@@ -1,0 +1,11 @@
+{
+    "itemtype": "VOL",
+    "itemid": "seed_rh-cort-vis",
+    "blockid": "vstat",
+    "blockid_hov": "statistics vols",
+    "title": "Check statistics vols (and effect estimates)",
+    "text": [
+        "olay: seed-based corr map (in errts.GP08.tproject)",
+        "seed: 'rh-cort-vis' in Vis, rad = 5.00 mm (4.0R, 91.0P, 3.0I)"
+    ]
+}

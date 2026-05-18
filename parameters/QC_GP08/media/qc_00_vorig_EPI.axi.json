@@ -1,0 +1,11 @@
+{
+    "itemtype": "VOL",
+    "itemid": "EPI",
+    "blockid": "vorig",
+    "blockid_hov": "vols in orig space",
+    "title": "Check vols in original space",
+    "text": [
+        "EPI in original space (volreg base)",
+        "dset: vr_base_min_outlier (EPI)"
+    ]
+}

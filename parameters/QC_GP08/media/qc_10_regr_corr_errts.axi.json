@@ -1,0 +1,8 @@
+{
+    "itemtype": "VOL",
+    "itemid": "corr_errts",
+    "blockid": "regr",
+    "blockid_hov": "regressors",
+    "title": "Check regressors, DFs and residuals",
+    "text": "olay: corr of WB-average errts with each voxel (corr_brain)"
+}

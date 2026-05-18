@@ -1,0 +1,8 @@
+{
+    "itemtype": "VOL",
+    "itemid": "seed_lh-PCC",
+    "blockid": "vstat",
+    "blockid_hov": "statistics vols",
+    "title": "Check statistics vols (and effect estimates)",
+    "subtext": "SHOW_PBAR:qc_03_vstat_seed_lh-PCC.pbar.json"
+}

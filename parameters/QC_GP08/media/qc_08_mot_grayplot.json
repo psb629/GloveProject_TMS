@@ -1,0 +1,15 @@
+{
+    "itemtype": "1D",
+    "itemid": "grayplot",
+    "blockid": "mot",
+    "blockid_hov": "motion and outliers",
+    "title": "Check motion and outliers",
+    "text": [
+        "Grayplot ('-pvorder') of residuals dset: errts.GP08.tproject",
+        "top: motion enorm (blue) and outlier frac (green), with censoring (red)"
+    ],
+    "subtext": [
+        "SHOW_PBAR:qc_08_mot_grayplot.pbar.json",
+        " rows: ordered by similarity to top two principal comps in mask (mask_epi_anat.GP08)"
+    ]
+}

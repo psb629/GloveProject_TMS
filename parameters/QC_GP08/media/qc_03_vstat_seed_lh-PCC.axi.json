@@ -1,0 +1,11 @@
+{
+    "itemtype": "VOL",
+    "itemid": "seed_lh-PCC",
+    "blockid": "vstat",
+    "blockid_hov": "statistics vols",
+    "title": "Check statistics vols (and effect estimates)",
+    "text": [
+        "olay: seed-based corr map (in errts.GP08.tproject)",
+        "seed: 'lh-PCC' in DMN, rad = 5.00 mm (5.0L, 49.0P, 40.0S)"
+    ]
+}

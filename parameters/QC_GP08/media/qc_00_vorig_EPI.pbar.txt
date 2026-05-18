@@ -1,0 +1,14 @@
+itemtype     :: CBAR
+cbar         :: "gray_scale"
+pbar_fname   :: "qc_00_vorig_EPI.pbar.jpg"
+pbar_bot     :: "0"
+pbar_top     :: "4650.000488"
+pbar_comm    :: "98%ile in vol"
+vthr         :: "0"
+vthr_comm    :: ""
+gen_comm     :: ""
+ulay_bot     :: "0"
+ulay_top     :: "4650.000488"
+ulay_globran :: "VOLUME"
+ulay_comm    :: ""
+pbar_for     :: dset

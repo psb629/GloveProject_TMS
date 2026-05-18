@@ -1,0 +1,15 @@
+{
+    "itemtype": "CBAR",
+    "cbar": "gray_scale",
+    "pbar_fname": "qc_08_mot_grayplot.pbar.jpg",
+    "pbar_bot": -3.29,
+    "pbar_top": 3.29,
+    "pbar_comm": "for normal distr, bounds of 0.001 prob tail",
+    "vthr": 0.0,
+    "vthr_comm": "",
+    "gen_comm": "",
+    "ulay_bot": 0.0,
+    "ulay_top": 1.0,
+    "ulay_globran": "VOLUME",
+    "ulay_comm": ""
+}

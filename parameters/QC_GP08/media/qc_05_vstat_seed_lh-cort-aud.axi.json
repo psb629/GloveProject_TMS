@@ -1,0 +1,11 @@
+{
+    "itemtype": "VOL",
+    "itemid": "seed_lh-cort-aud",
+    "blockid": "vstat",
+    "blockid_hov": "statistics vols",
+    "title": "Check statistics vols (and effect estimates)",
+    "text": [
+        "olay: seed-based corr map (in errts.GP08.tproject)",
+        "seed: 'lh-cort-aud' in Aud, rad = 5.00 mm (64.0L, 12.0P, 2.0S)"
+    ]
+}

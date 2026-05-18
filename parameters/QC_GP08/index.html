@@ -1,0 +1,1123 @@
+<html>
+    <head>
+    <link rel="stylesheet" type="text/css" href="extra_info/styles.css" />
+    <script type="text/javascript">
+
+
+// global vars
+var allBtn1, allTd1, allhr_sec;  // selection/location IDs
+var topi, previ;                 // keeps our current/last location
+var jsonfile = "apqc_GP08.json";  // json file: apqc_SUBJ.json
+var qcjson;                      // I/O json of QC button responses
+var nb_offset = 66-1;            // navbar height: needed for scroll/jump
+
+// properties of QC buttons that get toggled through
+const bkgds   = [ "#fff" , "#67a9cf", "#d7191c"  ];
+const valeurs = [ "?"    , "+"      , "X"        ];
+const tcols   = [ "#777" , "#FFF"   , "#000"     ];
+
+
+//window.onload = function() {
+function RunAtStart() {
+
+    // initialize arrays and location
+    initializeParams();
+
+    // read in JSON
+    loadJSON(jsonfile, function(unparsed_json) {
+      // give the global variable values
+      window.qcjson = JSON.parse(unparsed_json);
+    });
+
+    CheckJsonfileMatchesQcbuttons();
+
+    ApplyJsonfileToQcbuttons();
+};
+
+
+    window.onbeforeunload = function(event)
+    {
+        return confirm();
+    };
+
+// This function gets run when page loads ("onload").
+function initializeParams() {
+    allBtn1   = document.getElementsByClassName("btn1");   // btn1_vepi, btn1_*
+    allTd1    = document.getElementsByClassName("td1");    // td1_vepi,  td1_*
+    allhr_sec = document.getElementsByClassName("hr_sec"); // hr_vepi,   hr_*
+
+    topi      = findTopSectionIdx()       // idx of current loc
+    previ     = topi;                     // init "previous" idx
+    setTd1Border(topi, "#ffea00"); //"yellow"); // show location
+}
+
+function loadJSON(ifile, callback) {   
+  var xobj = new XMLHttpRequest();
+  xobj.overrideMimeType("application/json");
+  xobj.open('GET', ifile, false);  // need 'false' for synchrony!
+  xobj.onreadystatechange = function () {
+    if (xobj.readyState == 4 && xobj.status == "200") { !!!!
+      callback(xobj.responseText);
+    }
+  };
+  xobj.send(null);  
+}
+
+function CheckJsonfileMatchesQcbuttons() {
+    var Nele = qcjson.length;
+
+    for( var i=1; i<Nele; i++ ) {
+        var ele = qcjson[i][0];
+
+        var jj = i - 1;  // offset because of col heading in JSON
+        var bname = new String(allBtn1[jj].id); 
+        var bpost = bname.slice(5);  // skip the 'btn1_' part of button ID
+
+        if ( bpost != ele ) {
+             window.alert("**Error: postfix on button ID " + bname + " does not match with JSON entry " + ele); 
+             throw "DONE";
+        }
+    }
+}
+
+// This function gets run when page loads ("onload").
+function ApplyJsonfileToQcbuttons() {
+    var Nele = qcjson.length;
+
+    for( var i=1; i<Nele; i++ ) {
+
+        var jj = i - 1;  // offset because of col heading in JSON
+        var bid = new String(allBtn1[jj].id);
+
+        // Set the comments first, because the button presentation 
+        // of rating depends on whether that has been set
+        sendCommentToButtonAndForm(qcjson[i][2], bid);
+        sendRatingToButton(qcjson[i][1], bid);
+    }
+
+}
+
+function sendRatingToButton(ss, bid) {
+
+    if ( ss == "good" ) {
+       setThisButtonRating(bid, 1);
+    } else if ( ss == "bad" ) {
+       setThisButtonRating(bid, 2);
+    } else if ( ss == "other" ) {
+       setThisButtonRating(bid, 0);
+    } else if ( ss == "null" || ss == "" ) {
+       setThisButtonRating(bid, -1);
+    } else {
+      window.alert("**Error: unallowed rating in JSON:" + ss);
+      throw "DONE";
+    }
+}
+
+function sendCommentToButtonAndForm(comm, bid) {
+    thisButtonGetsAComment(bid, comm);
+
+    var bname = new String(bid); // basename
+    var cid   = 'comm_' + bname.slice(5);  // skip the 'btn1_' part of button ID
+
+    // because of how "null" is read in; this just matters in form
+    if ( comm == "null" ) {
+        var comm = "";
+    }
+    thisFormTextAreaGetsAComment(cid, comm);
+}
+
+window.addEventListener("scroll", function(event) {
+
+    var newi = findTopSectionIdx();
+
+    if ( newi != topi ) {
+        setTd1Border(newi, "#ffea00"); //"yellow");
+        setTd1Border(topi,  "inherit");      ; //"#FFF", "#444");
+        previ = topi;
+        topi  = newi;
+    }
+}, false);
+
+function findTopSectionIdx() {
+    for( var i=0; i<allhr_sec.length; i++ ) {
+        var bid = allhr_sec[i].id; 
+        var bbox = document.getElementById(bid).getBoundingClientRect();
+        if ( bbox.top - nb_offset > 1 ) {
+            break;
+        }
+    }
+    return i-1;
+}
+
+function setTd1Border(ii, bkgdcol) {
+    var newtid = allTd1[ii].id;
+    document.getElementById(newtid).style.background = bkgdcol;
+}
+
+function btn1Clicked(event, button) {
+    if (event.ctrlKey) {
+       btn1ClickedWithCtrl(event, button);
+    }  else {
+       changeColor(button); //alert("The CTRL key was NOT pressed!");
+    }
+
+}
+
+function btn1ClickedWithCtrl(event, button) {
+    // get the form ID from button ID
+    var bname = new String(button.id);
+    var bpost = bname.slice(5); // skip the 'btn1_' part of button ID
+    var cFormID = 'cform_' + bpost;
+    // if closed, this opens it; otherwise, it closes it
+    if ( document.getElementById(cFormID).style.display == false ||
+         document.getElementById(cFormID).style.display == "none" ) {
+         openCommentForm(cFormID, button.id); 
+    } else {
+         keepFromCommentFormViaBtn1(button.id, cFormID);
+    }
+}
+
+function changeColor(button) {
+  newidx = Number(button.dataset.idx || 0);    // idx=0 on first click
+  newidx = (newidx + 1) % bkgds.length;        // calc new idx, mod Ncol
+  button.dataset.idx       = newidx;            // store new idx in ele
+  button.style.color       = tcols[newidx];     // set color
+  button.style.background  = bkgds[newidx];     // set bkgd
+  button.style.borderColor = bkgds[newidx];     // set bkgd
+  button.textContent       = valeurs[newidx];
+  checkIfButtonCommented( button );            // set text
+}
+
+function checkIfButtonCommented( button ) {
+
+    var value = button.textContent;
+    var bcomm = button.dataset.txtcomm;
+    var VAL_HAS_QUOTE = value.includes(`"`);
+
+    // if no comment, make sure there is no
+    if ( ( bcomm == "" || bcomm == "null" ) ) {
+       if ( VAL_HAS_QUOTE ) {
+         var newval = value.replace(/"/g, "");
+         button.textContent = newval;
+       }
+    } else {
+       if ( !VAL_HAS_QUOTE ) {
+          button.textContent = `"` + value + `"`;
+       }
+    }
+}
+
+function setThisButtonRating(bid, idx) {
+    // normal values
+    if ( idx >= 0 ) {
+      document.getElementById(bid).textContent      = valeurs[idx];
+      document.getElementById(bid).style.background = bkgds[idx];
+      document.getElementById(bid).style.borderColor = bkgds[idx];
+      document.getElementById(bid).style.color      = tcols[idx];
+      document.getElementById(bid).dataset.idx      = idx;
+      checkIfButtonCommented( document.getElementById(bid) );
+    
+    } else {
+    // the reset, for "null" JSON
+      document.getElementById(bid).textContent      = "";
+      document.getElementById(bid).style.background = ''; // reset to CSS
+      document.getElementById(bid).style.borderColor = ''; // reset to CSS
+      document.getElementById(bid).style.color      = ''; // reset to CSS
+      document.getElementById(bid).dataset.idx      = 0; //null;
+    }
+}
+
+function isBtn1InNullState( bid ) {
+    var tc = document.getElementById(bid).textContent;
+    if ( tc == "" ) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function thisButtonGetsAComment(bid, comm) {
+    document.getElementById(bid).dataset.txtcomm = comm;
+
+    // and don't allow a null state anymore if it has a comment:
+    // update it to "other"/"?"
+    if ( comm == "" || comm == "null" ) {
+    } else {
+       if ( isBtn1InNullState(bid) ) {
+           setThisButtonRating(bid, 0);
+       }
+    }
+
+    // and reset quotes, if necessary.
+    //window.alert(bid);
+    checkIfButtonCommented( document.getElementById(bid) );
+}
+
+function allYourBaseAreBelongToUs(ii) { 
+   for( var i=0; i<allBtn1.length; i++ ) { 
+     var bid = allBtn1[i].id; 
+     var ival = document.getElementById(bid).textContent; 
+     if ( ival == "" ) { 
+       setThisButtonRating(bid, ii); 
+     }
+   } 
+}
+
+function reallyAllYourBaseAreBelongToUs(ii) { 
+   for( var i=0; i<allBtn1.length; i++ ) { 
+     var bid = allBtn1[i].id; 
+     var ival = document.getElementById(bid).textContent; 
+     setThisButtonRating(bid, ii);
+     if ( ii < 0 ) {
+        sendCommentToButtonAndForm("", bid);
+     }
+   } 
+} 
+
+function getBoundingRect(iid) {
+    var bbox = document.getElementById(iid).getBoundingClientRect();
+    return bbox;
+}
+
+function openCommentForm(cfID, bid) {
+    document.getElementById(cfID).style.display = "block";
+    var bbox = getBoundingRect(bid);
+    document.getElementById(cfID).style.left  = bbox.left; 
+}
+
+function closeCommentForm(cfID) {
+    document.getElementById(cfID).style.display = "none";
+}
+
+function clearCommentForm(cid, cfID) {
+    document.getElementById(cid).value = "";
+
+    // get the btn1 ID from comm ID
+    var bname = new String(cid); // basename
+    var bid   = "btn1_" + bname.slice(5);  // skip the 'comm_' part of button ID
+
+    thisButtonGetsAComment(bid, null);
+
+    closeCommentForm(cfID);
+}
+
+function thisFormTextAreaGetsAComment(cid, comm) {
+    document.getElementById(cid).value = comm;
+}
+
+function keepFromCommentForm(cid, cfID) {
+
+    // user's text
+    var commtext = document.getElementById(cid).value;
+
+    // get the btn1 ID from comm ID
+    var bname = new String(cid); // basename
+    var bid   = "btn1_" + bname.slice(5);  // skip the 'comm_' part of button ID
+
+    thisButtonGetsAComment(bid, commtext);
+    closeCommentForm(cfID);
+}
+
+function keepFromCommentFormViaBtn1(bid, cfID) {
+
+    // get the btn1 ID from comm ID
+    var bname = new String(bid); // basename
+    var cid   = 'comm_' + bname.slice(5);  // skip the 'comm_' part of button ID
+
+    // user's text
+    var commtext = document.getElementById(cid).value;
+
+    thisButtonGetsAComment(bid, commtext);
+    closeCommentForm(cfID);
+}
+
+function moveToDiv( hr_sec ) {
+    var sid = new String(hr_sec.id)
+    var rect = getBoundingRect(sid);
+
+    var scrtop =  this.scrollY;
+    var newloc = rect.top + scrtop - nb_offset;
+    window.scrollTo(0, newloc);
+
+    //window.alert("earlier: " + rect.top + ", and now: " + this.scrollY);
+}
+
+function saveJsonValuesByNames(elename, colname, VAL) {
+
+    cc = findCol(colname);
+    rr = findQceleRow(elename);
+
+    qcjson[rr][cc] = VAL;
+}
+
+function saveJsonValuesByNums(rr, cc, VAL) {
+    Ncol = qcjson[0].length;
+    if ( cc >= Ncol ) {
+      window.alert("**Error: Column [" + cc + "] not in JSON table!");
+      throw "DONE";
+    }
+
+    var Nrow = qcjson.length;
+    if ( i >= Nrow ) {
+      window.alert("**Error: QC element [" + rr + "] not in JSON table!"); 
+      throw "DONE!";
+    }
+
+    qcjson[rr][cc] = VAL;
+}
+
+function findQceleRow(elename) {
+    var Nrow = qcjson.length;
+    for( var i=1 ; i<Nrow ; i++ ) {
+       if ( elename == qcjson[i][0] ) {
+         break;
+       }
+    }
+
+    if ( i >= Nrow ) {
+      window.alert("**Error: QC element " + elename + " not in JSON table!"); 
+      throw "DONE";
+    }
+
+    return i;
+}
+
+function findCol(colname) {
+    Ncol = qcjson[0].length;
+    for( var cc=1 ; cc<Ncol ; cc++ ) {
+       if ( colname == qcjson[0][cc] ) {
+         break;
+       }
+    }
+
+    if ( cc >= Ncol ) {
+       window.alert("**Error: Column " + colname + " not in JSON table!"); 
+       throw "DONE";
+    }
+
+    return cc;
+}
+
+function doSaveAllInfo() {
+    updateLocalJson();
+
+    var text     = JSON.stringify(qcjson);
+    //var filename = "apqc.json";
+    saveDownloadJsonfile(text, jsonfile);
+
+} 
+
+function doShowHelp() {
+    window.open('help.html', '_blank');
+
+} 
+
+function updateLocalJson() {
+    var Nele = qcjson.length;
+    for( var i=1; i<Nele; i++ ) {
+
+        var qcele = qcjson[i][0];
+
+        var jj    = i - 1;  // offset because of col heading in JSON
+        var bid   = new String(allBtn1[jj].id); 
+
+        var rattext = translateBtn1TextToJsonRating(document.getElementById(bid).textContent);
+        saveJsonValuesByNames(qcele, "rating", rattext);
+
+        // save the comment part
+        var commtext = document.getElementById(bid).dataset.txtcomm;
+        saveJsonValuesByNames(qcele, "comment", commtext); 
+    }
+    // window.alert("SAVING JSON: " + qcjson);
+}
+
+function saveDownloadJsonfile(text, filename){
+    var a = document.createElement('a');
+    a.setAttribute('href', 'data:text/plain;charset=utf-u,'+encodeURIComponent(text));
+    a.setAttribute('download', filename);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+function translateBtn1TextToJsonRating( tt ) {
+    if ( tt.includes("+") ) {
+       return "good";
+    } else if ( tt.includes("X") ) {
+       return "bad";
+    } else if ( tt.includes("?") ) {
+       return "other";
+    } else if ( tt == "null" || tt == "" ) {
+       return "null";
+    } else {
+      window.alert("**Error: unallowed text/rating in button:" + tt);
+      throw "DONE";
+    }
+}
+
+</script>
+
+    
+    <div class="navbar">
+      <table style="width: 100%">
+
+        <tr>
+          <td style="width: 100%">
+            <a style="text-align: left"> | </a>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="width: 100%">
+            <button class="button-generic button-LHS btn0" onclick="">
+            | </button>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+    
+<div class="navbar">
+<table style="float: left">
+
+        <tr>
+          <td class="td1" id=td1_Top>
+            <button class="button-generic button-LHS btn5" id="btn5_Top" 
+            onmousedown="moveToDiv(hr_Top)" title="Top of page for:&#10GP08"  
+            onkeypress="if ( event.keyCode == 13 ) { moveToDiv(hr_Top); }">
+            Top</button>
+          </td>
+        </tr>
+        <td >
+              <button class="button-generic button-LHS btn0" id="btn0_Top" 
+              onclick="" 
+              title="QC BUTTON FORM
+
+NAVIGATE
+Click a label ('Top', etc.) to jump to a section.
+
+RATE + COMMENT
+Click the QC button below it to record your rating, toggling through:
+    X  :  bad,
+    ?  :  other/revisit,
+    +  :  good.
+Use ctrl+click on a QC button to provide a comment.  Close the comment 
+panel with ctrl+click or its buttons.
+
+SPEEDIFY
+There are 'filler buttons' for each rating: |A+|, |Ax|, |A?|.
+Click once to fill all *empty* buttons with that rating, or
+double click to fill *all* buttons with that rating.
+
+--- click 'HELP' at the right for more details and features ---">
+              FORM:</button></td>
+            </tr>
+</table><table style="float: left">
+
+        <tr>
+          <td class="td1" id=td1_vorig>
+            <button class="button-generic button-LHS btn5" id="btn5_vorig" 
+            onmousedown="moveToDiv(hr_vorig)" title="vols in orig space"  
+            onkeypress="if ( event.keyCode == 13 ) { moveToDiv(hr_vorig); }">
+            vorig</button>
+          </td>
+        </tr>
+        <td >
+              <button class="button-generic button-LHS btn1" id="btn1_vorig" data-txtcomm="" 
+              onmousedown="btn1Clicked(event, this)" 
+              onkeypress="if ( event.keyCode == 13 ) { btn1Clicked(event, this); }" 
+              </button>
+            </td>
+            </tr>
+</table>
+            <div class="form-popup" id="cform_vorig" > 
+                <form class="form-container" onsubmit="return false;"> 
+                <textarea type="text" placeholder="Enter comment" 
+                rows="4" cols="40" id="comm_vorig" 
+                onkeydown="if (event.keyCode == 10 || event.keyCode == 13) { 
+                   event.preventDefault(); keepFromCommentForm(comm_vorig.id, cform_vorig.id);} 
+                   else if (event.keyCode == 27) { 
+                       clearCommentForm(comm_vorig.id, cform_vorig.id); }">
+                </textarea>  
+                <button type="button" class="btn" 
+                onclick="keepFromCommentForm(comm_vorig.id, cform_vorig.id)">keep+close</button> 
+                <button type="button" class="btn cancel" 
+                onclick="clearCommentForm(comm_vorig.id, cform_vorig.id)">clear+close</button> 
+                </form> 
+            </div> 
+            <table style="float: left">
+
+        <tr>
+          <td class="td1" id=td1_vstat>
+            <button class="button-generic button-LHS btn5" id="btn5_vstat" 
+            onmousedown="moveToDiv(hr_vstat)" title="statistics vols"  
+            onkeypress="if ( event.keyCode == 13 ) { moveToDiv(hr_vstat); }">
+            vstat</button>
+          </td>
+        </tr>
+        <td >
+              <button class="button-generic button-LHS btn1" id="btn1_vstat" data-txtcomm="" 
+              onmousedown="btn1Clicked(event, this)" 
+              onkeypress="if ( event.keyCode == 13 ) { btn1Clicked(event, this); }" 
+              </button>
+            </td>
+            </tr>
+</table>
+            <div class="form-popup" id="cform_vstat" > 
+                <form class="form-container" onsubmit="return false;"> 
+                <textarea type="text" placeholder="Enter comment" 
+                rows="4" cols="40" id="comm_vstat" 
+                onkeydown="if (event.keyCode == 10 || event.keyCode == 13) { 
+                   event.preventDefault(); keepFromCommentForm(comm_vstat.id, cform_vstat.id);} 
+                   else if (event.keyCode == 27) { 
+                       clearCommentForm(comm_vstat.id, cform_vstat.id); }">
+                </textarea>  
+                <button type="button" class="btn" 
+                onclick="keepFromCommentForm(comm_vstat.id, cform_vstat.id)">keep+close</button> 
+                <button type="button" class="btn cancel" 
+                onclick="clearCommentForm(comm_vstat.id, cform_vstat.id)">clear+close</button> 
+                </form> 
+            </div> 
+            <table style="float: left">
+
+        <tr>
+          <td class="td1" id=td1_mot>
+            <button class="button-generic button-LHS btn5" id="btn5_mot" 
+            onmousedown="moveToDiv(hr_mot)" title="motion and outliers"  
+            onkeypress="if ( event.keyCode == 13 ) { moveToDiv(hr_mot); }">
+            mot</button>
+          </td>
+        </tr>
+        <td >
+              <button class="button-generic button-LHS btn1" id="btn1_mot" data-txtcomm="" 
+              onmousedown="btn1Clicked(event, this)" 
+              onkeypress="if ( event.keyCode == 13 ) { btn1Clicked(event, this); }" 
+              </button>
+            </td>
+            </tr>
+</table>
+            <div class="form-popup" id="cform_mot" > 
+                <form class="form-container" onsubmit="return false;"> 
+                <textarea type="text" placeholder="Enter comment" 
+                rows="4" cols="40" id="comm_mot" 
+                onkeydown="if (event.keyCode == 10 || event.keyCode == 13) { 
+                   event.preventDefault(); keepFromCommentForm(comm_mot.id, cform_mot.id);} 
+                   else if (event.keyCode == 27) { 
+                       clearCommentForm(comm_mot.id, cform_mot.id); }">
+                </textarea>  
+                <button type="button" class="btn" 
+                onclick="keepFromCommentForm(comm_mot.id, cform_mot.id)">keep+close</button> 
+                <button type="button" class="btn cancel" 
+                onclick="clearCommentForm(comm_mot.id, cform_mot.id)">clear+close</button> 
+                </form> 
+            </div> 
+            <table style="float: left">
+
+        <tr>
+          <td class="td1" id=td1_regr>
+            <button class="button-generic button-LHS btn5" id="btn5_regr" 
+            onmousedown="moveToDiv(hr_regr)" title="regressors"  
+            onkeypress="if ( event.keyCode == 13 ) { moveToDiv(hr_regr); }">
+            regr</button>
+          </td>
+        </tr>
+        <td >
+              <button class="button-generic button-LHS btn1" id="btn1_regr" data-txtcomm="" 
+              onmousedown="btn1Clicked(event, this)" 
+              onkeypress="if ( event.keyCode == 13 ) { btn1Clicked(event, this); }" 
+              </button>
+            </td>
+            </tr>
+</table>
+            <div class="form-popup" id="cform_regr" > 
+                <form class="form-container" onsubmit="return false;"> 
+                <textarea type="text" placeholder="Enter comment" 
+                rows="4" cols="40" id="comm_regr" 
+                onkeydown="if (event.keyCode == 10 || event.keyCode == 13) { 
+                   event.preventDefault(); keepFromCommentForm(comm_regr.id, cform_regr.id);} 
+                   else if (event.keyCode == 27) { 
+                       clearCommentForm(comm_regr.id, cform_regr.id); }">
+                </textarea>  
+                <button type="button" class="btn" 
+                onclick="keepFromCommentForm(comm_regr.id, cform_regr.id)">keep+close</button> 
+                <button type="button" class="btn cancel" 
+                onclick="clearCommentForm(comm_regr.id, cform_regr.id)">clear+close</button> 
+                </form> 
+            </div> 
+            <table style="float: left">
+
+        <tr>
+          <td class="td1" id=td1_radcor>
+            <button class="button-generic button-LHS btn5" id="btn5_radcor" 
+            onmousedown="moveToDiv(hr_radcor)" title="@radial_correlate vols"  
+            onkeypress="if ( event.keyCode == 13 ) { moveToDiv(hr_radcor); }">
+            radcor</button>
+          </td>
+        </tr>
+        <td >
+              <button class="button-generic button-LHS btn1" id="btn1_radcor" data-txtcomm="" 
+              onmousedown="btn1Clicked(event, this)" 
+              onkeypress="if ( event.keyCode == 13 ) { btn1Clicked(event, this); }" 
+              </button>
+            </td>
+            </tr>
+</table>
+            <div class="form-popup" id="cform_radcor" > 
+                <form class="form-container" onsubmit="return false;"> 
+                <textarea type="text" placeholder="Enter comment" 
+                rows="4" cols="40" id="comm_radcor" 
+                onkeydown="if (event.keyCode == 10 || event.keyCode == 13) { 
+                   event.preventDefault(); keepFromCommentForm(comm_radcor.id, cform_radcor.id);} 
+                   else if (event.keyCode == 27) { 
+                       clearCommentForm(comm_radcor.id, cform_radcor.id); }">
+                </textarea>  
+                <button type="button" class="btn" 
+                onclick="keepFromCommentForm(comm_radcor.id, cform_radcor.id)">keep+close</button> 
+                <button type="button" class="btn cancel" 
+                onclick="clearCommentForm(comm_radcor.id, cform_radcor.id)">clear+close</button> 
+                </form> 
+            </div> 
+            <table style="float: left">
+
+        <tr>
+          <td class="td1" id=td1_warns>
+            <button class="button-generic button-LHS btn5" id="btn5_warns" 
+            onmousedown="moveToDiv(hr_warns)" title="all warnings from processing" style="color: #CCFFCC;"  
+            onkeypress="if ( event.keyCode == 13 ) { moveToDiv(hr_warns); }">
+            warns</button>
+          </td>
+        </tr>
+        <td >
+              <button class="button-generic button-LHS btn1" id="btn1_warns" data-txtcomm="" 
+              onmousedown="btn1Clicked(event, this)" 
+              onkeypress="if ( event.keyCode == 13 ) { btn1Clicked(event, this); }" 
+              </button>
+            </td>
+            </tr>
+</table>
+            <div class="form-popup" id="cform_warns" > 
+                <form class="form-container" onsubmit="return false;"> 
+                <textarea type="text" placeholder="Enter comment" 
+                rows="4" cols="40" id="comm_warns" 
+                onkeydown="if (event.keyCode == 10 || event.keyCode == 13) { 
+                   event.preventDefault(); keepFromCommentForm(comm_warns.id, cform_warns.id);} 
+                   else if (event.keyCode == 27) { 
+                       clearCommentForm(comm_warns.id, cform_warns.id); }">
+                </textarea>  
+                <button type="button" class="btn" 
+                onclick="keepFromCommentForm(comm_warns.id, cform_warns.id)">keep+close</button> 
+                <button type="button" class="btn cancel" 
+                onclick="clearCommentForm(comm_warns.id, cform_warns.id)">clear+close</button> 
+                </form> 
+            </div> 
+            <table style="float: left">
+
+        <tr>
+          <td class="td1" id=td1_qsumm>
+            <button class="button-generic button-LHS btn5" id="btn5_qsumm" 
+            onmousedown="moveToDiv(hr_qsumm)" title="summary quantities from @ss_review_basic"  
+            onkeypress="if ( event.keyCode == 13 ) { moveToDiv(hr_qsumm); }">
+            qsumm</button>
+          </td>
+        </tr>
+        <td >
+              <button class="button-generic button-LHS btn1" id="btn1_qsumm" data-txtcomm="" 
+              onmousedown="btn1Clicked(event, this)" 
+              onkeypress="if ( event.keyCode == 13 ) { btn1Clicked(event, this); }" 
+              </button>
+            </td>
+            </tr>
+</table>
+            <div class="form-popup" id="cform_qsumm" > 
+                <form class="form-container" onsubmit="return false;"> 
+                <textarea type="text" placeholder="Enter comment" 
+                rows="4" cols="40" id="comm_qsumm" 
+                onkeydown="if (event.keyCode == 10 || event.keyCode == 13) { 
+                   event.preventDefault(); keepFromCommentForm(comm_qsumm.id, cform_qsumm.id);} 
+                   else if (event.keyCode == 27) { 
+                       clearCommentForm(comm_qsumm.id, cform_qsumm.id); }">
+                </textarea>  
+                <button type="button" class="btn" 
+                onclick="keepFromCommentForm(comm_qsumm.id, cform_qsumm.id)">keep+close</button> 
+                <button type="button" class="btn cancel" 
+                onclick="clearCommentForm(comm_qsumm.id, cform_qsumm.id)">clear+close</button> 
+                </form> 
+            </div> 
+            <table style="float: left">
+
+        <tr>
+          <td class="td1" id=td1_FINAL>
+            <button class="button-generic button-LHS btn5" id="btn5_FINAL" 
+            onmousedown="moveToDiv(hr_FINAL)" title="overall subject rating" style="background-color: #ccc; color: #000;"  
+            onkeypress="if ( event.keyCode == 13 ) { moveToDiv(hr_FINAL); }">
+            FINAL</button>
+          </td>
+        </tr>
+        <td >
+              <button class="button-generic button-LHS btn1" id="btn1_FINAL" data-txtcomm="" 
+              onmousedown="btn1Clicked(event, this)" 
+              onkeypress="if ( event.keyCode == 13 ) { btn1Clicked(event, this); }" 
+              </button>
+            </td>
+            </tr>
+</table>
+            <div class="form-popup" id="cform_FINAL" > 
+                <form class="form-container" onsubmit="return false;"> 
+                <textarea type="text" placeholder="Enter comment" 
+                rows="4" cols="40" id="comm_FINAL" 
+                onkeydown="if (event.keyCode == 10 || event.keyCode == 13) { 
+                   event.preventDefault(); keepFromCommentForm(comm_FINAL.id, cform_FINAL.id);} 
+                   else if (event.keyCode == 27) { 
+                       clearCommentForm(comm_FINAL.id, cform_FINAL.id); }">
+                </textarea>  
+                <button type="button" class="btn" 
+                onclick="keepFromCommentForm(comm_FINAL.id, cform_FINAL.id)">keep+close</button> 
+                <button type="button" class="btn cancel" 
+                onclick="clearCommentForm(comm_FINAL.id, cform_FINAL.id)">clear+close</button> 
+                </form> 
+            </div> 
+            <table style="float: right; margin-right: 2px">
+<tr>
+<td style="width: 180px; white-space:nowrap;">
+
+<button class="button-generic button-RHS button-RHS-little btn2good" title="Speed rating with:  +.
+Click once (or Enter) to fill all *empty* QC buttons;
+Double-click (or ctrl+Enter) to fill *all* QC buttons.  
+" 
+onmousedown="allYourBaseAreBelongToUs(1)" 
+onkeydown="if (event.keyCode == 10 || event.keyCode == 13) { if (event.ctrlKey) {
+reallyAllYourBaseAreBelongToUs(1); } else { allYourBaseAreBelongToUs(1); } } " 
+ondblclick="reallyAllYourBaseAreBelongToUs(1)"> 
+A+</button>
+    
+<button class="button-generic button-RHS button-RHS-little btn2bad" title="Speed rating with:  X.
+Click once (or Enter) to fill all *empty* QC buttons;
+Double-click (or ctrl+Enter) to fill *all* QC buttons.  
+" 
+onmousedown="allYourBaseAreBelongToUs(2)" 
+onkeydown="if (event.keyCode == 10 || event.keyCode == 13) { if (event.ctrlKey) { 
+reallyAllYourBaseAreBelongToUs(2); } else { allYourBaseAreBelongToUs(2); } } " 
+ondblclick="reallyAllYourBaseAreBelongToUs(2)"> 
+Ax</button>
+    
+<button class="button-generic button-RHS button-RHS-little btn2other" title="Speed rating with:  ?. 
+Click once (or Enter) to fill all *empty* QC buttons;
+Double-click (or ctrl+Enter) to fill *all* QC buttons.  
+" 
+onmousedown="allYourBaseAreBelongToUs(0)" 
+onkeydown="if (event.keyCode == 10 || event.keyCode == 13) { if (event.ctrlKey) { 
+reallyAllYourBaseAreBelongToUs(0); } else { allYourBaseAreBelongToUs(0); } } " 
+ondblclick="reallyAllYourBaseAreBelongToUs(0)"> 
+A?</button>
+    
+<button class="button-generic button-RHS button-RHS-little btn2clear" title="Clear all (!) QC buttons.
+Double-click (or ctrl+Enter) to clear *all* QC buttons.
+" 
+onkeydown="if (event.keyCode == 10 || event.keyCode == 13) { if (event.ctrlKey) { 
+reallyAllYourBaseAreBelongToUs(-1); } } " 
+ondblclick="reallyAllYourBaseAreBelongToUs(-1)"> 
+clr</button>
+    </td>
+</tr>
+<tr>
+<td style="width: 180px; white-space:nowrap;" id=td3_SAVE><button class="button-generic button-RHS btn3save" title="Save ratings+comments.
+Click once (or Enter) to write QC form to disk.
+" onclick="doSaveAllInfo()">SAVE</button>
+<button class="button-generic button-RHS btn3help" title="Open help page.
+Click once (or Enter) to open new help page.
+" onclick="doShowHelp()">HELP</button>
+</td>
+</tr>
+</table></div>
+    
+<div class="div_pad_class">
+
+<hr class="hr_sec" id="hr_Top"/><div id="Top"  style="padding-top: 80px; margin-top: -80px;">
+    <h1><center> afni_proc.py single subject report <center></h1></div>
+
+<div style="text-align: center;">
+    <div style="display: inline-block; text-align: left;">
+    <pre><h2>subj: GP08</h2></pre>
+    <pre><h3>task: task_name</h3></pre>
+
+    </div>
+</div>
+
+
+    </head>
+    
+    <body onload="RunAtStart()">
+    
+</div>
+
+<div class="div_pad_class">
+
+<hr class="hr_sec"  id="hr_vorig" />
+<div  id="vorig"  style="padding-top: 80px; margin-top: -80px;"><pre   class='padtop'  ><center>[vorig]<b> <u>Check vols in original space</u>        </b></center></pre></div>
+<div  id="EPI"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>EPI in original space (volreg base)
+dset: vr_base_min_outlier (EPI)</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_00_vorig_EPI.axi.jpg"><img src="media/qc_00_vorig_EPI.axi.jpg" alt="media/qc_00_vorig_EPI.axi.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+
+<div style="text-align: center">
+    <a href="media/qc_00_vorig_EPI.sag.jpg"><img src="media/qc_00_vorig_EPI.sag.jpg" alt="media/qc_00_vorig_EPI.sag.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b> dset: 0.0 <img  class='pbar'  style="display: inline;" src="media/qc_00_vorig_EPI.pbar.jpg" > 4650.000488 (98%ile in vol)
+range: [0, 10320];  obliquity: 0.000</b></pre></div>
+</div>
+
+<div class="div_pad_class">
+
+<hr class="hr_sec"  id="hr_vstat" />
+<div  id="vstat"  style="padding-top: 80px; margin-top: -80px;"><pre   class='padtop'  ><center>[vstat]<b> <u>Check statistics vols (and effect estimates)</u>        </b></center></pre></div>
+<div  id="seed_lh-PCC"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>olay: seed-based corr map (in errts.GP08.tproject)
+seed: 'lh-PCC' in DMN, rad = 5.00 mm (5.0L, 49.0P, 40.0S)</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_03_vstat_seed_lh-PCC.axi.jpg"><img src="media/qc_03_vstat_seed_lh-PCC.axi.jpg" alt="media/qc_03_vstat_seed_lh-PCC.axi.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+
+<div style="text-align: center">
+    <a href="media/qc_03_vstat_seed_lh-PCC.sag.jpg"><img src="media/qc_03_vstat_seed_lh-PCC.sag.jpg" alt="media/qc_03_vstat_seed_lh-PCC.sag.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b> olay: -0.6 <img  class='pbar'  style="display: inline;" src="media/qc_03_vstat_seed_lh-PCC.pbar.jpg" > 0.6 (Pearson r)
+ thr : 0.3 (alpha+boxed on)</b></pre></div><div  id="seed_rh-cort-vis"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>olay: seed-based corr map (in errts.GP08.tproject)
+seed: 'rh-cort-vis' in Vis, rad = 5.00 mm (4.0R, 91.0P, 3.0I)</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_04_vstat_seed_rh-cort-vis.axi.jpg"><img src="media/qc_04_vstat_seed_rh-cort-vis.axi.jpg" alt="media/qc_04_vstat_seed_rh-cort-vis.axi.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+
+<div style="text-align: center">
+    <a href="media/qc_04_vstat_seed_rh-cort-vis.sag.jpg"><img src="media/qc_04_vstat_seed_rh-cort-vis.sag.jpg" alt="media/qc_04_vstat_seed_rh-cort-vis.sag.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b> olay: -0.6 <img  class='pbar'  style="display: inline;" src="media/qc_04_vstat_seed_rh-cort-vis.pbar.jpg" > 0.6 (Pearson r)
+ thr : 0.3 (alpha+boxed on)</b></pre></div><div  id="seed_lh-cort-aud"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>olay: seed-based corr map (in errts.GP08.tproject)
+seed: 'lh-cort-aud' in Aud, rad = 5.00 mm (64.0L, 12.0P, 2.0S)</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_05_vstat_seed_lh-cort-aud.axi.jpg"><img src="media/qc_05_vstat_seed_lh-cort-aud.axi.jpg" alt="media/qc_05_vstat_seed_lh-cort-aud.axi.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+
+<div style="text-align: center">
+    <a href="media/qc_05_vstat_seed_lh-cort-aud.sag.jpg"><img src="media/qc_05_vstat_seed_lh-cort-aud.sag.jpg" alt="media/qc_05_vstat_seed_lh-cort-aud.sag.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b> olay: -0.6 <img  class='pbar'  style="display: inline;" src="media/qc_05_vstat_seed_lh-cort-aud.pbar.jpg" > 0.6 (Pearson r)
+ thr : 0.3 (alpha+boxed on)</b></pre></div>
+</div>
+
+<div class="div_pad_class">
+
+<hr class="hr_sec"  id="hr_mot" />
+<div  id="mot"  style="padding-top: 80px; margin-top: -80px;"><pre   class='padtop'  ><center>[mot]<b> <u>Check motion and outliers</u>      </b></center></pre></div>
+<div  id="enormoutlr"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>Motion Euclidean norm (enorm) and outlier fraction
+with limit and combined censoring</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_06_mot_enormoutlr.jpg"><img src="media/qc_06_mot_enormoutlr.jpg" alt="media/qc_06_mot_enormoutlr.jpg"  class='bordered'  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b>censored vols (3%): 464..486,498..501,504,755,756,1074,1075,1081..1095,1707..1726,2170..2193,3255..3287</b></pre></div><div  id="VR6"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>6 volume registration motion parameters (in dfile_rall.1D)
+with combined censoring</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_07_mot_VR6.jpg"><img src="media/qc_07_mot_VR6.jpg" alt="media/qc_07_mot_VR6.jpg"  class='bordered'  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b>censored vols (3%): 464..486,498..501,504,755,756,1074,1075,1081..1095,1707..1726,2170..2193,3255..3287</b></pre></div><div  id="grayplot"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>Grayplot ('-pvorder') of residuals dset: errts.GP08.tproject
+top: motion enorm (blue) and outlier frac (green), with censoring (red)</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_08_mot_grayplot.jpg"><img src="media/qc_08_mot_grayplot.jpg" alt="media/qc_08_mot_grayplot.jpg"  class='bordered'  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b> olay: -3.29 <img  class='pbar'  style="display: inline;" src="media/qc_08_mot_grayplot.pbar.jpg" > 3.29 (for normal distr, bounds of 0.001 prob tail)
+ rows: ordered by similarity to top two principal comps in mask (mask_epi_anat.GP08)</b></pre></div>
+</div>
+
+<div class="div_pad_class">
+
+<hr class="hr_sec"  id="hr_regr" />
+<div  id="regr"  style="padding-top: 80px; margin-top: -80px;"><pre   class='padtop'  ><center>[regr]<b> <u>Check regressors, DFs and residuals</u>       </b></center></pre></div>
+<div  id="df"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>Summary of degrees of freedom (DF) usage from processing</b></pre></div><div> 
+    <pre  class='datbord'  ><left><b>
+initial DF                   : 3288 : 100.0%
+
+DF used for regs of interest :    0 :   0.0%
+DF used for censoring        :  124 :   3.8%
+DF used for polort           :   15 :   0.5%
+DF used for motion           :   36 :   1.1%
+total DF used                :  175 :   5.3%
+
+final DF                     : 3113 :  94.7%
+
+</b></left></pre>
+</div><div  id="corr_errts"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>olay: corr of WB-average errts with each voxel (corr_brain)</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_10_regr_corr_errts.axi.jpg"><img src="media/qc_10_regr_corr_errts.axi.jpg" alt="media/qc_10_regr_corr_errts.axi.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+
+<div style="text-align: center">
+    <a href="media/qc_10_regr_corr_errts.sag.jpg"><img src="media/qc_10_regr_corr_errts.sag.jpg" alt="media/qc_10_regr_corr_errts.sag.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b> olay: -0.6 <img  class='pbar'  style="display: inline;" src="media/qc_10_regr_corr_errts.pbar.jpg" > 0.6 (Pearson r)
+ thr : 0.3 (alpha+boxed on)</b></pre></div><div  id="tsnr_fin"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>olay: TSNR.GP08 (final TSNR dset)
+mask: mask_epi_anat.GP08 (for percentile range)</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_11_regr_tsnr_fin.axi.jpg"><img src="media/qc_11_regr_tsnr_fin.axi.jpg" alt="media/qc_11_regr_tsnr_fin.axi.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+
+<div style="text-align: center">
+    <a href="media/qc_11_regr_tsnr_fin.sag.jpg"><img src="media/qc_11_regr_tsnr_fin.sag.jpg" alt="media/qc_11_regr_tsnr_fin.sag.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b> olay: 0.0 <img  class='pbar'  style="display: inline;" src="media/qc_11_regr_tsnr_fin.pbar.jpg" > 228.0 (95%ile in mask)
+ cbar: hot color range (5-95%ile TSNR in mask):  64 - 228</b></pre></div>
+</div>
+
+<div class="div_pad_class">
+
+<hr class="hr_sec"  id="hr_radcor" />
+<div  id="radcor"  style="padding-top: 80px; margin-top: -80px;"><pre   class='padtop'  ><center>[radcor]<b> <u>Check extent of local correlation</u>         </b></center></pre></div>
+<div  id="rc_tcat"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>@radial_correlate check for data dir: radcor.pb00.tcat
+    olay: -0.7 <img  class='pbar'  style="display: inline;" src="media/qc_12_radcor_rc_tcat_r01.pbar.jpg" > 0.7 (ulay is 0th vol of EPI)
+    thr : 0.4 (alpha on)</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_12_radcor_rc_tcat_r01.axi.jpg"><img src="media/qc_12_radcor_rc_tcat_r01.axi.jpg" alt="media/qc_12_radcor_rc_tcat_r01.axi.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b>olay: radcor.20.r01.corr</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_12_radcor_rc_tcat_r02.axi.jpg"><img src="media/qc_12_radcor_rc_tcat_r02.axi.jpg" alt="media/qc_12_radcor_rc_tcat_r02.axi.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b>olay: radcor.20.r02.corr</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_12_radcor_rc_tcat_r03.axi.jpg"><img src="media/qc_12_radcor_rc_tcat_r03.axi.jpg" alt="media/qc_12_radcor_rc_tcat_r03.axi.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b>olay: radcor.20.r03.corr</b></pre></div><div  id="rc_volreg"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>@radial_correlate check for data dir: radcor.pb04.volreg</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_13_radcor_rc_volreg_r01.axi.jpg"><img src="media/qc_13_radcor_rc_volreg_r01.axi.jpg" alt="media/qc_13_radcor_rc_volreg_r01.axi.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b>olay: radcor.20.r01.corr</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_13_radcor_rc_volreg_r02.axi.jpg"><img src="media/qc_13_radcor_rc_volreg_r02.axi.jpg" alt="media/qc_13_radcor_rc_volreg_r02.axi.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b>olay: radcor.20.r02.corr</b></pre></div>
+<div style="text-align: center">
+    <a href="media/qc_13_radcor_rc_volreg_r03.axi.jpg"><img src="media/qc_13_radcor_rc_volreg_r03.axi.jpg" alt="media/qc_13_radcor_rc_volreg_r03.axi.jpg"  
+    style="display: inline-block; text-align: center;"></a> 
+    </div>
+<div  style="padding-top: 0px; margin-top: -0px;"  class='container2'  ><pre><b>olay: radcor.20.r03.corr</b></pre></div>
+</div>
+
+<div class="div_pad_class">
+
+<hr class="hr_sec"  id="hr_warns" />
+<div  id="warns"  style="padding-top: 80px; margin-top: -80px;"><pre   class='padtop'  ><center>[warns]<b> <u>Check all warnings from processing</u>        </b></center></pre></div>
+<div  id="xmat"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>Regression matrix correlation warnings</b></pre></div><div> 
+    <pre  class='warnbord'  ><left><b><p class="wcol_none">none</p>-- no warnings for correlation matrix (cut = 0.400) --
+</b></left></pre>
+</div><div  id="cen_total"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>General censor fraction warnings</b></pre></div><div> 
+    <pre  class='warnbord'  ><left><b><p class="wcol_none">none</p>Censored  124 of 3288 total time points :   3.8%
+
+</b></left></pre>
+</div><div  id="press"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>Pre-steady state warnings</b></pre></div><div> 
+    <pre  class='warnbord'  ><left><b><p class="wcol_none">none</p></b></left></pre>
+</div><div  id="flip"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>Left-right flip check warnings</b></pre></div><div> 
+    <pre  class='warnbord'  ><left><b><p class="wcol_none">none</p> flip guess  cost func  original val  flipped val 
+ ----------  ---------  ------------  ----------- 
+    NO_FLIP        lpa       0.79985      0.91649 
+
+</b></left></pre>
+</div>
+</div>
+
+<div class="div_pad_class">
+
+<hr class="hr_sec"  id="hr_qsumm" />
+<div  id="qsumm"  style="padding-top: 80px; margin-top: -80px;"><pre   class='padtop'  ><center>[qsumm]<b> <u>Check summary quantities from @ss_review_basic</u>        </b></center></pre></div>
+<div  id="ssrev"  style="padding-top: 80px; margin-top: -80px;"  class='container'  ><pre><b>Basic summary quantities from processing</b></pre></div><div> 
+    <pre  class='datbord'  ><left><b>
+subject ID                : GP08
+AFNI version              : AFNI_21.2.04
+AFNI package              : linux_ubuntu_16_64
+TR                        : 0.46
+TRs removed (per run)     : 0
+num stim classes provided : 0
+final anatomy dset        : anat_final.GP08+tlrc.HEAD
+final stats dset          : NO_STATS
+final errts dset          : errts.GP08.tproject+tlrc.HEAD
+orig voxel counts         : 83	93	74
+orig voxel resolution     : 2.682927	2.682927	2.682927
+orig volume center        : -0.119102	-4.214462	14.200081
+final voxel resolution    : 2.500000	2.500000	2.500000
+
+motion limit              : 0.4
+num TRs above mot limit   : 4
+average motion (per TR)   : 0.0562099
+average censored motion   : 0.0536324
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+max motion displacement   : 4.16842
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+max censored displacement : 3.40365
+outlier limit             : 0.05
+average outlier frac (TR) : 0.00568924
+num TRs above out limit   : 118
+flip guess                : NO_FLIP
+
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+num runs found            : 3
+num TRs per run           : 1096 1096 1096
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+num TRs per run (applied) : 1049 1054 1061
+num TRs per run (censored): 47 42 35
+fraction censored per run : 0.0428832 0.0383212 0.0319343
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+TRs total (uncensored)    : 3288
+TRs total                 : 3164
+degrees of freedom used   : 51
+degrees of freedom left   : 3113
+
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+TRs censored              : 124
+censor fraction           : 0.037713
+num regs of interest      : 0
+
+TSNR average              : 143.051
+global correlation (GCOR) : 0.0799785
+anat/EPI mask Dice coef   : 0.795795
+anat/templ mask Dice coef : 0.817519
+blur estimates (ACF)      : 0.882725 3.4268 11.4891
+blur estimates (FWHM)     : 0 0 0
+
+
+</b></left></pre>
+</div></div></body>
+
+</html>

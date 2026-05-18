@@ -1,0 +1,9 @@
+{
+    "itemtype": "WARN",
+    "itemid": "cen_total",
+    "blockid": "warns",
+    "blockid_hov": "all warnings from processing",
+    "title": "Check all warnings from processing",
+    "text": "General censor fraction warnings",
+    "warn_level": "none"
+}

@@ -1,0 +1,9 @@
+{
+    "itemtype": "VOL",
+    "itemid": "rc_volreg",
+    "blockid": "radcor",
+    "blockid_hov": "@radial_correlate vols",
+    "title": "Check extent of local correlation",
+    "text": "@radial_correlate check for data dir: radcor.pb04.volreg",
+    "subtext": "olay: radcor.20.r01.corr"
+}

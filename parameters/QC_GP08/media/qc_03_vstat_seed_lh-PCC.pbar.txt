@@ -1,0 +1,14 @@
+itemtype     :: CBAR
+cbar         :: "Reds_and_Blues_Inv"
+pbar_fname   :: "qc_03_vstat_seed_lh-PCC.pbar.jpg"
+pbar_bot     :: "-0.6"
+pbar_top     :: "0.6"
+pbar_comm    :: "Pearson r"
+vthr         :: "0.3"
+vthr_comm    :: "alpha+boxed on"
+gen_comm     :: ""
+ulay_bot     :: "0.000000"
+ulay_top     :: "1296.724320"
+ulay_globran :: "VOLUME"
+ulay_comm    :: ""
+

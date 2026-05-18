@@ -1,0 +1,15 @@
+{
+    "itemtype": "CBAR",
+    "cbar": "  228=red  200=oran-red  173=orange  146=oran-yell  118=yell-oran  91=yellow  64=lt-blue2  36=blue  0=none",
+    "pbar_fname": "qc_11_regr_tsnr_fin.pbar.jpg",
+    "pbar_bot": 0.0,
+    "pbar_top": 228.0,
+    "pbar_comm": "95%ile in mask",
+    "vthr": 0.0,
+    "vthr_comm": "",
+    "gen_comm": " cbar: hot color range (5-95%ile TSNR in mask):  64 - 228",
+    "ulay_bot": 0.0,
+    "ulay_top": 1296.72432,
+    "ulay_globran": "VOLUME",
+    "ulay_comm": ""
+}

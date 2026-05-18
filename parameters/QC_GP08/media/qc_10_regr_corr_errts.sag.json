@@ -1,0 +1,8 @@
+{
+    "itemtype": "VOL",
+    "itemid": "corr_errts",
+    "blockid": "regr",
+    "blockid_hov": "regressors",
+    "title": "Check regressors, DFs and residuals",
+    "subtext": "SHOW_PBAR:qc_10_regr_corr_errts.pbar.json"
+}

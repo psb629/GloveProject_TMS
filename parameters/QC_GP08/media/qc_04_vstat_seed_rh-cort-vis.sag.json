@@ -1,0 +1,8 @@
+{
+    "itemtype": "VOL",
+    "itemid": "seed_rh-cort-vis",
+    "blockid": "vstat",
+    "blockid_hov": "statistics vols",
+    "title": "Check statistics vols (and effect estimates)",
+    "subtext": "SHOW_PBAR:qc_04_vstat_seed_rh-cort-vis.pbar.json"
+}

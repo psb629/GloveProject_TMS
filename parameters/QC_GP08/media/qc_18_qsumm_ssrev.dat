@@ -1,0 +1,70 @@
+
+subject ID                : GP08
+AFNI version              : AFNI_21.2.04
+AFNI package              : linux_ubuntu_16_64
+TR                        : 0.46
+TRs removed (per run)     : 0
+num stim classes provided : 0
+final anatomy dset        : anat_final.GP08+tlrc.HEAD
+final stats dset          : NO_STATS
+final errts dset          : errts.GP08.tproject+tlrc.HEAD
+orig voxel counts         : 83	93	74
+orig voxel resolution     : 2.682927	2.682927	2.682927
+orig volume center        : -0.119102	-4.214462	14.200081
+final voxel resolution    : 2.500000	2.500000	2.500000
+
+motion limit              : 0.4
+num TRs above mot limit   : 4
+average motion (per TR)   : 0.0562099
+average censored motion   : 0.0536324
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+max motion displacement   : 4.16842
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+max censored displacement : 3.40365
+outlier limit             : 0.05
+average outlier frac (TR) : 0.00568924
+num TRs above out limit   : 118
+flip guess                : NO_FLIP
+
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+num runs found            : 3
+num TRs per run           : 1096 1096 1096
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+num TRs per run (applied) : 1049 1054 1061
+num TRs per run (censored): 47 42 35
+fraction censored per run : 0.0428832 0.0383212 0.0319343
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+TRs total (uncensored)    : 3288
+TRs total                 : 3164
+degrees of freedom used   : 51
+degrees of freedom left   : 3113
+
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+/usr/local/afni/abin/afnipy/lib_afni1D.py:1302: SyntaxWarning: 'str' object is not callable; perhaps you missed a comma?
+  print('** uncensor from vec: nt = %d, but nocen len = %d' \
+TRs censored              : 124
+censor fraction           : 0.037713
+num regs of interest      : 0
+
+TSNR average              : 143.051
+global correlation (GCOR) : 0.0799785
+anat/EPI mask Dice coef   : 0.795795
+anat/templ mask Dice coef : 0.817519
+blur estimates (ACF)      : 0.882725 3.4268 11.4891
+blur estimates (FWHM)     : 0 0 0
+
+
